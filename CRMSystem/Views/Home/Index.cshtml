@@ -1,0 +1,157 @@
+﻿@model List<AllRequestInfo>
+
+<div>
+<h3>Заявки</h3>
+
+@*<div class="div-box">
+    <a asp-area="Admin" asp-controller="ServiceItems" asp-action="Edit" asp-route-id="">Добавить услугу</a>
+</div>*@
+
+@if (Model.Any())
+{
+<style>
+    /* Dropdown Button */
+    .dropbtn {
+        background-color: #3498DB;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        /* Dropdown button on hover & focus */
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+            /* Change color of dropdown links on hover */
+            .dropdown-content a:hover {
+                background-color: #ddd;
+            }
+
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {
+        display: block;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+
+<script>
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+    function MaxMinFilter() {
+
+        var maxVal = document.getElementById("maxVal");
+        var minVal = document.getElementById("minVal");
+        var reqList = document.getElementsByClassName("request");
+
+        for (i = 0; i < reqList.length; i++) {
+            var request = reqList[i];
+            var val = request.querySelector(".amountofmoney");
+            var maxValue = parseInt(maxVal.value);
+            var minValue = parseInt(minVal.value);
+
+            if (maxValue != null) {
+                var value = parseInt(val.innerText);
+                console.log(maxValue);
+                console.log(value);
+                if (value > maxValue) {
+                    reqList[i].classList.add("hidden");
+                }
+            }
+            if (minValue != null) {
+                var value = parseInt(val.innerText);
+                console.log(minValue);
+                console.log(value);
+                if (value < minValue) {
+                    reqList[i].classList.add("hidden");
+                }
+            }
+        }
+    }
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn') && !event.target.matches('.dropdown-contents')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script> 
+ 
+
+<div>
+    <div>
+        <label>Фильтры</label>
+        <div style="display:flex">
+            <div class="dropdown">
+                <button onclick="myFunction()" class="dropbtn">Стоимость</button>
+
+                <div id="myDropdown" class="dropdown-content dropdown-contents ">
+                    <label  class="dropdown-contents">макс. стоимость</label>
+                    <input type="number"  class="dropdown-contents" id="maxVal"></input>
+                    <label  class="dropdown-contents">мин. стоимость</label>
+                    <input type="number"  class="dropdown-contents" id="minVal"></input>
+                </div>
+            </div>
+            
+            <button onclick="MaxMinFilter()" style="margin-left:5px;">Применить</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ИНН заявителя</th>
+                <th>Номер закупки</th>
+                <th>Сумма Заявки</th>
+
+            </tr>
+        </thead>
+        @foreach (AllRequestInfo entity in Model)
+        {
+            <tr class="request">
+                <td>@entity.requester.INN</td>
+                <td><a asp-controller="Home" asp-action="bid" asp-route-id="@entity.request.RequestId">@entity.requestInformation.PurchaseNumber</a></td>
+                <td class =" amountofmoney">@entity.requestInformation.AmountOfMoney</td>
+                
+            </tr>
+        }
+    </table>
+
+
+</div>
+}
+</div>

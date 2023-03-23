@@ -1,0 +1,188 @@
+﻿@model AllRequestInfo
+@using System.Security.Claims
+<div>Подробная информация</div>
+@*Статус заявки*@
+@if (User.IsInRole("manager"))
+{
+    <div style="display: flex; justify-content: right; margin-bottom: 20px; ">
+        <label style="margin-right:8px">Статус заявки :</label>
+        <select id="requestStatusDropDown" name="requestStatusDropDown">
+            <option>Создана</option>
+            <option>На рассмотрении</option>
+            <option>Требуются уточнения</option>
+            <option>Принята</option>
+            <option>Отказ</option>
+        </select>
+        <button style="margin-left:7px" onclick="SaveStatus()"> Сохранить</button>
+    </div>
+}
+@if (User.IsInRole("agent"))
+{
+    <div style="display: flex; justify-content: right; margin-bottom: 20px; ">
+        <label style="margin-right:8px">Статус заявки :</label>
+        <label>@Model.requestInformation.Status</label>
+    </div>
+}
+
+<div hidden id="userName">@User.Identity.Name</div>
+<div hidden id="reqId">@Model.request.RequestId</div>
+<form autocomplete="off" asp-controller="Home" asp-action="SaveChanges" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="request.RequestId" value="@Model.request.RequestId" />
+    <input type="hidden" asp-for="request.UserId" value="@this.User.FindFirst(ClaimTypes.NameIdentifier)">
+    @*Информация по заявке*@
+
+    <div style="display: block; padding: 5px; border: black; border-width: medium; background-color: lightgray; border-radius: 5px; margin-bottom: 35px; box-shadow: 2px 2px 8px 1px;">
+        <div>Информация о заявке</div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px; ">
+                <label asp-for="requestInformation.RequestCode">Заявка №</label>
+                <input asp-for="requestInformation.RequestCode" />
+                <span asp-validation-for="requestInformation.RequestCode"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requestInformation.PurchaseNumber">Номер закупки</label>
+                <input asp-for="requestInformation.PurchaseNumber" />
+                <span asp-validation-for="requestInformation.PurchaseNumber"></span>
+            </div>
+        </div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requestInformation.DateOfIssue">Дата выдачи</label><br />
+                <input asp-for="requestInformation.DateOfIssue" />
+                <span asp-validation-for="requestInformation.DateOfIssue"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requestInformation.AmountOfMoney">Сумма заявки</label>
+                <input asp-for="requestInformation.AmountOfMoney" />
+                <span asp-validation-for="requestInformation.AmountOfMoney"></span>
+            </div>
+        </div>
+    </div>
+
+    @*Данные заявителя*@
+    <div style="display: block; padding: 5px; border: black; border-width: medium; background-color: lightgray; border-radius: 5px; margin-bottom: 35px; box-shadow: 2px 2px 8px 1px;">
+        <div>Данные заявителя</div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requester.INN">ИНН</label>
+                <input asp-for="requester.INN" />
+                <span asp-validation-for="requester.INN"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requester.Name">Название</label>
+                <input asp-for="requester.Name" />
+                <span asp-validation-for="requester.Name"></span>
+            </div>
+        </div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requester.COntactEmail">Контактная почта</label>
+                <input asp-for="requester.COntactEmail" />
+                <span asp-validation-for="requester.COntactEmail"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requester.ContactPhone">Контактный телефон</label>
+                <input asp-for="requester.ContactPhone" />
+                <span asp-validation-for="requester.ContactPhone"></span>
+            </div>
+        </div>
+    </div>
+
+    @*Исполнительный орган*@
+    <div style="display: block; padding: 5px; border: black; border-width: medium; background-color: lightgray; border-radius: 5px; margin-bottom: 35px; box-shadow: 2px 2px 8px 1px;">
+        <div>Исполнительный орган</div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px">
+                <label asp-for="executiveDepartment.LastName">Фамилия</label>
+                <input asp-for="executiveDepartment.LastName" />
+                <span asp-validation-for="executiveDepartment.LastName"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="executiveDepartment.FirstName">Имя</label>
+                <input asp-for="executiveDepartment.FirstName" />
+                <span asp-validation-for="executiveDepartment.FirstName"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="executiveDepartment.MiddleName">Отчество</label>
+                <input asp-for="executiveDepartment.MiddleName" />
+                <span asp-validation-for="executiveDepartment.MiddleName"></span>
+            </div>
+        </div>
+        <div style="display:flex">
+            <div class="div-box" style="padding:10px">
+                <label asp-for="executiveDepartment.Position">Должность</label>
+                <input asp-for="executiveDepartment.Position" />
+                <span asp-validation-for="executiveDepartment.Position"></span>
+            </div>
+            <div class="div-box" style="padding:10px">
+                <label asp-for="requester.INN">ИНН</label>
+                <input asp-for="requester.INN" />
+                <span asp-validation-for="requester.INN"></span>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" name="foo">Сохранить изменения</button>
+</form>
+<div id="inputForm">
+    <input type="text" id="message" />
+    <input type="button" id="sendBtn" value="Отправить" />
+</div>
+<div id="chatroom"></div>
+<script src="~/js/signalr.js"></script>
+<script>
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .build();
+
+    let userName = '';
+    // получение сообщения от сервера
+    hubConnection.on('Send', function (message, userName, requestId, userId) {
+
+        // создаем элемент <b> для имени пользователя
+        let userNameElem = document.createElement("b");
+        userNameElem.appendChild(document.createTextNode(userName + ': '));
+
+        // создает элемент <p> для сообщения пользователя
+        let elem = document.createElement("p");
+        elem.appendChild(userNameElem);
+        elem.appendChild(document.createTextNode(message));
+
+        var firstElem = document.getElementById("chatroom").firstChild;
+        document.getElementById("chatroom").insertBefore(elem, firstElem);
+
+    });
+    requestId = document.querySelector("#reqId").textContent;
+    userId = document.querySelector("#request_UserId").textContent;
+    // установка имени пользователя
+    userName = document.querySelector("#userName").textContent;
+    // отправка сообщения на сервер
+    document.getElementById("sendBtn").addEventListener("click", function (e) {
+        let message = document.getElementById("message").value;
+        hubConnection.invoke("Send", message, userName, requestId, userId);
+    });
+
+    hubConnection.start();
+</script>
+<script>
+    function SaveStatus() {
+        var e = document.getElementById("requestStatusDropDown");
+        var status = e.options[e.selectedIndex].text;
+        var requestID = document.getElementById("request_RequestId").value;
+        var data = { RequestId: requestID, Status: status };
+        let response = fetch('/Home/SaveStatus', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                RequestId: requestID,
+                Status: status
+            })
+        })
+
+
+        console.log(data);
+        alert("Статус изменен");
+    }
+</script>
